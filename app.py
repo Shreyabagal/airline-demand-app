@@ -1,12 +1,12 @@
 
-#3012f9dd2026a4fa68b7707d491bf03d
+
 from flask import Flask, render_template
 import requests
 import pandas as pd
 
 app = Flask(__name__)
 
-API_KEY = "3012f9dd2026a4fa68b7707d491bf03d"  # Replace with your key
+API_KEY = "3012f9dd2026a4fa68b7707d491bf03d"  
 
 def fetch_flight_data():
     url = f"http://api.aviationstack.com/v1/flights?access_key={API_KEY}&limit=100"
