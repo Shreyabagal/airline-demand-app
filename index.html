@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Airline Booking Trends</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f8f9fa; }
+        h1, h2 { color: #2c3e50; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        canvas { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>✈️ Airline Booking Trends Dashboard</h1>
+
+    <!-- Popular Routes -->
+    <h2>🔝 Top 5 Popular Routes (Table)</h2>
+    <table>
+        <tr><th>From</th><th>To</th><th>Count</th></tr>
+        {% for route in routes %}
+        <tr>
+            <td>{{ route.Departure }}</td>
+            <td>{{ route.Arrival }}</td>
+            <td>{{ route.Count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>📊 Popular Routes Chart</h2>
+    <canvas id="routesChart" width="600" height="300"></canvas>
+
+    <!-- Flight Status -->
+    <h2>📋 Flight Status Count (List)</h2>
+    <ul>
+        {% for key, val in status.items() %}
+        <li><strong>{{ key }}</strong>: {{ val }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📈 Flight Status Chart</h2>
+    <canvas id="statusChart" width="600" height="300"></canvas>
+
+    <!-- Flights per Airline -->
+    <h2>🛫 Flights per Airline (List)</h2>
+    <ul>
+        {% for airline, count in airlines.items() %}
+        <li>{{ airline }}: {{ count }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📉 Airline Frequency Chart</h2>
+    <canvas id="airlineChart" width="600" height="300"></canvas>
+
+    <!-- Sample Data -->
+    <h2>📑 Sample Flight Data (Table)</h2>
+    <table>
+        <tr><th>Airline</th><th>Flight Number</th><th>Departure</th><th>Arrival</th><th>Status</th></tr>
+        {% for f in flights %}
+        <tr>
+            <td>{{ f['Airline'] }}</td>
+            <td>{{ f['Flight Number'] }}</td>
+            <td>{{ f['Departure'] }}</td>
+            <td>{{ f['Arrival'] }}</td>
+            <td>{{ f['Status'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Charts Script -->
+    <script>
+        const routeLabels = {{ routes | map(attribute='Departure') | list | safe }};
+        const routeData = {{ routes | map(attribute='Count') | list | safe }};
+
+        const statusLabels = {{ status.keys() | list | safe }};
+        const statusData = {{ status.values() | list | safe }};
+
+        const airlineLabels = {{ airlines.keys() | list | safe }};
+        const airlineData = {{ airlines.values() | list | safe }};
+
+        new Chart(document.getElementById('routesChart'), {
+            type: 'bar',
+            data: {
+                labels: routeLabels,
+                datasets: [{
+                    label: 'Top Routes',
+                    data: routeData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('statusChart'), {
+            type: 'pie',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    label: 'Flight Status',
+                    data: statusData,
+                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#2ecc71'],
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('airlineChart'), {
+            type: 'bar',
+            data: {
+                labels: airlineLabels,
+                datasets: [{
+                    label: 'Flights by Airline',
+                    data: airlineData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                }]
+            }
+        });
+    </script>
+</body>
+</html>
